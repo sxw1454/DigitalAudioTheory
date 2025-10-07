@@ -72,31 +72,26 @@ function bitcrusher()
     end
     
     function initializePlots()
-        % Create three subplots
-        % Top plot: Bit depth and theoretical SNR
-        ax1 = subplot(3,1,1, 'Parent', fig);
-        title('Bit Depth and Theoretical SNR');
-        xlabel('Time (s)');
-        ylabel('SNR (dB)');
-        grid on;
-        hold on;
+        % Create three uiaxes for plotting in uifigure
+        ax1 = uiaxes(fig, 'Position', [20, 350, 750, 120]);
+        title(ax1, 'Bit Depth and Theoretical SNR');
+        xlabel(ax1, 'Time (s)');
+        ylabel(ax1, 'SNR (dB)');
+        grid(ax1, 'on');
+        hold(ax1, 'on');
         
-        % Middle plot: Measured SNR
-        ax2 = subplot(3,1,2, 'Parent', fig);
-        title('Measured SNR (from quantized audio)');
-        xlabel('Time (s)');
-        ylabel('SNR (dB)');
-        grid on;
-        hold on;
+        ax2 = uiaxes(fig, 'Position', [20, 220, 750, 120]);
+        title(ax2, 'Measured SNR (from quantized audio)');
+        xlabel(ax2, 'Time (s)');
+        ylabel(ax2, 'SNR (dB)');
+        grid(ax2, 'on');
+        hold(ax2, 'on');
         
-        % Bottom plot: Error spectrogram
-        ax3 = subplot(3,1,3, 'Parent', fig);
-        title('Error Spectrogram');
-        xlabel('Time (s)');
-        ylabel('Frequency (Hz)');
-        colorbar;
+        ax3 = uiaxes(fig, 'Position', [20, 20, 750, 190]);
+        title(ax3, 'Error Spectrogram');
+        xlabel(ax3, 'Time (s)');
+        ylabel(ax3, 'Frequency (Hz)');
         
-        % Store plot handles
         setappdata(fig, 'ax1', ax1);
         setappdata(fig, 'ax2', ax2);
         setappdata(fig, 'ax3', ax3);
@@ -228,10 +223,13 @@ function bitcrusher()
         title(ax3, 'Error Spectrogram (dB)');
         xlabel(ax3, 'Time (s)');
         ylabel(ax3, 'Frequency (Hz)');
-        colorbar(ax3);
         colormap(ax3, 'jet');
         axis(ax3, 'xy');
         ylim(ax3, [0, fs/2]);
+        
+        % Add colorbar to the right of the spectrogram
+        c = colorbar(ax3);
+        c.Position = [0.95, 0.03, 0.02, 0.8];
         
         % Force update
         drawnow;

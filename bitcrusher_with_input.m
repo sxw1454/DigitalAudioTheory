@@ -113,26 +113,25 @@ function bitcrusher_with_input(audio_input, fs_input)
     end
     
     function initializePlots()
-        % Create three subplots
-        ax1 = subplot(3,1,1, 'Parent', fig);
-        title('Bit Depth and Theoretical SNR');
-        xlabel('Time (s)');
-        ylabel('SNR (dB)');
-        grid on;
-        hold on;
+        % Create three uiaxes for plotting in uifigure
+        ax1 = uiaxes(fig, 'Position', [20, 350, 750, 120]);
+        title(ax1, 'Bit Depth and Theoretical SNR');
+        xlabel(ax1, 'Time (s)');
+        ylabel(ax1, 'SNR (dB)');
+        grid(ax1, 'on');
+        hold(ax1, 'on');
         
-        ax2 = subplot(3,1,2, 'Parent', fig);
-        title('Measured SNR (from quantized audio)');
-        xlabel('Time (s)');
-        ylabel('SNR (dB)');
-        grid on;
-        hold on;
+        ax2 = uiaxes(fig, 'Position', [20, 220, 750, 120]);
+        title(ax2, 'Measured SNR (from quantized audio)');
+        xlabel(ax2, 'Time (s)');
+        ylabel(ax2, 'SNR (dB)');
+        grid(ax2, 'on');
+        hold(ax2, 'on');
         
-        ax3 = subplot(3,1,3, 'Parent', fig);
-        title('Error Spectrogram');
-        xlabel('Time (s)');
-        ylabel('Frequency (Hz)');
-        colorbar;
+        ax3 = uiaxes(fig, 'Position', [20, 20, 750, 190]);
+        title(ax3, 'Error Spectrogram');
+        xlabel(ax3, 'Time (s)');
+        ylabel(ax3, 'Frequency (Hz)');
         
         setappdata(fig, 'ax1', ax1);
         setappdata(fig, 'ax2', ax2);
@@ -214,6 +213,7 @@ function bitcrusher_with_input(audio_input, fs_input)
         cla(ax2);
         cla(ax3);
         
+        % Plot 1: Theoretical SNR
         plot(ax1, time_vec, repmat(theoretical_snr, size(time_vec)), 'b-', 'LineWidth', 2);
         title(ax1, sprintf('Bit Depth: %d bits, Theoretical SNR: %.1f dB', current_bit_depth, theoretical_snr));
         xlabel(ax1, 'Time (s)');
@@ -221,6 +221,7 @@ function bitcrusher_with_input(audio_input, fs_input)
         grid(ax1, 'on');
         ylim(ax1, [0, 150]);
         
+        % Plot 2: Measured SNR
         plot(ax2, time_vec, repmat(measured_snr, size(time_vec)), 'r-', 'LineWidth', 2);
         title(ax2, sprintf('Measured SNR: %.1f dB', measured_snr));
         xlabel(ax2, 'Time (s)');
@@ -228,6 +229,7 @@ function bitcrusher_with_input(audio_input, fs_input)
         grid(ax2, 'on');
         ylim(ax2, [0, 150]);
         
+        % Plot 3: Error spectrogram
         window_length = round(0.1 * fs);
         overlap = round(0.5 * window_length);
         nfft = 2^nextpow2(window_length);
@@ -240,10 +242,13 @@ function bitcrusher_with_input(audio_input, fs_input)
         title(ax3, 'Error Spectrogram (dB)');
         xlabel(ax3, 'Time (s)');
         ylabel(ax3, 'Frequency (Hz)');
-        colorbar(ax3);
         colormap(ax3, 'jet');
         axis(ax3, 'xy');
         ylim(ax3, [0, fs/2]);
+        
+        % Add colorbar to the right of the spectrogram
+        c = colorbar(ax3);
+        c.Position = [0.95, 0.03, 0.02, 0.8];
         
         drawnow;
     end
